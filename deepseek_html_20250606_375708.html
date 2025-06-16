@@ -1,0 +1,1094 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Deriv Copy Trading Pro</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root {
+      --primary-color: #1abc9c;
+      --secondary-color: #3498db;
+      --dark-color: #2c3e50;
+      --light-color: #ecf0f1;
+      --danger-color: #e74c3c;
+      --success-color: #2ecc71;
+      --warning-color: #f39c12;
+    }
+    
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #f5f7fa;
+      color: #333;
+      line-height: 1.6;
+      padding: 0;
+      margin: 0;
+    }
+    
+    .container {
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    
+    header {
+      background-color: var(--dark-color);
+      color: white;
+      padding: 20px 0;
+      text-align: center;
+      border-radius: 0 0 10px 10px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      margin-bottom: 30px;
+    }
+    
+    h1 {
+      margin: 0;
+      font-size: 28px;
+    }
+    
+    h2 {
+      color: var(--dark-color);
+      border-bottom: 2px solid var(--primary-color);
+      padding-bottom: 8px;
+      margin-top: 30px;
+    }
+    
+    h3 {
+      color: var(--dark-color);
+      margin-top: 0;
+    }
+    
+    .card {
+      background-color: white;
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+      padding: 20px;
+      margin-bottom: 20px;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    
+    .card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    }
+    
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 15px;
+    }
+    
+    .card-header i {
+      font-size: 24px;
+      color: var(--primary-color);
+    }
+    
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 20px;
+      margin-bottom: 30px;
+    }
+    
+    button {
+      padding: 12px 24px;
+      font-size: 16px;
+      font-weight: 600;
+      background: var(--primary-color);
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      margin-top: 10px;
+      transition: all 0.3s ease;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    button:hover {
+      background: #16a085;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+    
+    button i {
+      margin-right: 8px;
+    }
+    
+    button.secondary {
+      background: var(--secondary-color);
+    }
+    
+    button.secondary:hover {
+      background: #2980b9;
+    }
+    
+    button.danger {
+      background: var(--danger-color);
+    }
+    
+    button.danger:hover {
+      background: #c0392b;
+    }
+    
+    input[type="text"], input[type="password"] {
+      padding: 12px;
+      width: 100%;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      margin: 8px 0;
+      font-size: 16px;
+      transition: border 0.3s ease;
+    }
+    
+    input[type="text"]:focus, input[type="password"]:focus {
+      border-color: var(--primary-color);
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(26, 188, 156, 0.2);
+    }
+    
+    label {
+      font-weight: 600;
+      display: block;
+      margin-top: 10px;
+    }
+    
+    .status {
+      padding: 12px;
+      border-radius: 4px;
+      margin-top: 15px;
+      font-weight: 500;
+    }
+    
+    .status.off {
+      background-color: #f8d7da;
+      color: var(--danger-color);
+    }
+    
+    .status.on {
+      background-color: #d4edda;
+      color: var(--success-color);
+    }
+    
+    .status.pending {
+      background-color: #fff3cd;
+      color: var(--warning-color);
+    }
+    
+    /* Enhanced Toggle switch */
+    .switch-container {
+      display: flex;
+      align-items: center;
+      margin: 15px 0;
+    }
+    
+    .switch {
+      position: relative;
+      display: inline-block;
+      width: 60px;
+      height: 34px;
+      margin-right: 15px;
+    }
+    
+    .switch input { 
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+    
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: #ccc;
+      transition: .4s;
+      border-radius: 34px;
+    }
+    
+    .slider:before {
+      position: absolute;
+      content: "";
+      height: 26px;
+      width: 26px;
+      left: 4px;
+      bottom: 4px;
+      background-color: white;
+      transition: .4s;
+      border-radius: 50%;
+    }
+    
+    input:checked + .slider {
+      background-color: var(--primary-color);
+    }
+    
+    input:checked + .slider:before {
+      transform: translateX(26px);
+    }
+    
+    /* Trade history table */
+    .trade-history {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+    
+    .trade-history th, .trade-history td {
+      padding: 12px 15px;
+      text-align: left;
+      border-bottom: 1px solid #ddd;
+    }
+    
+    .trade-history th {
+      background-color: var(--dark-color);
+      color: white;
+    }
+    
+    .trade-history tr:nth-child(even) {
+      background-color: #f9f9f9;
+    }
+    
+    .trade-history tr:hover {
+      background-color: #f1f1f1;
+    }
+    
+    .profit {
+      color: var(--success-color);
+      font-weight: bold;
+    }
+    
+    .loss {
+      color: var(--danger-color);
+      font-weight: bold;
+    }
+    
+    /* Connection status indicators */
+    .connection-status {
+      display: flex;
+      justify-content: space-between;
+      margin: 20px 0;
+    }
+    
+    .connection-box {
+      flex: 1;
+      padding: 15px;
+      text-align: center;
+      border-radius: 6px;
+      margin: 0 10px;
+      background-color: white;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+    
+    .connection-box i {
+      font-size: 24px;
+      margin-bottom: 10px;
+    }
+    
+    .connected {
+      color: var(--success-color);
+    }
+    
+    .disconnected {
+      color: var(--danger-color);
+    }
+    
+    /* Responsive adjustments */
+    @media (max-width: 768px) {
+      .grid {
+        grid-template-columns: 1fr;
+      }
+      
+      .connection-status {
+        flex-direction: column;
+      }
+      
+      .connection-box {
+        margin: 10px 0;
+      }
+    }
+    
+    /* Animation for status changes */
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+      100% { transform: scale(1); }
+    }
+    
+    .pulse {
+      animation: pulse 1.5s infinite;
+    }
+    
+    /* Tooltip */
+    .tooltip {
+      position: relative;
+      display: inline-block;
+      cursor: pointer;
+      margin-left: 5px;
+    }
+    
+    .tooltip .tooltiptext {
+      visibility: hidden;
+      width: 200px;
+      background-color: var(--dark-color);
+      color: #fff;
+      text-align: center;
+      border-radius: 6px;
+      padding: 5px;
+      position: absolute;
+      z-index: 1;
+      bottom: 125%;
+      left: 50%;
+      transform: translateX(-50%);
+      opacity: 0;
+      transition: opacity 0.3s;
+      font-size: 14px;
+      font-weight: normal;
+    }
+    
+    .tooltip:hover .tooltiptext {
+      visibility: visible;
+      opacity: 1;
+    }
+    
+    /* Notification badge */
+    .badge {
+      display: inline-block;
+      padding: 3px 7px;
+      font-size: 12px;
+      font-weight: bold;
+      line-height: 1;
+      color: white;
+      text-align: center;
+      white-space: nowrap;
+      vertical-align: middle;
+      background-color: var(--danger-color);
+      border-radius: 10px;
+      margin-left: 5px;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container">
+      <h1><i class="fas fa-exchange-alt"></i> Deriv Copy Trading Pro</h1>
+      <p>Automatically replicate trades between your Deriv demo and real accounts</p>
+    </div>
+  </header>
+  
+  <div class="container">
+    <div class="connection-status">
+      <div class="connection-box" id="master-status">
+        <i class="fas fa-user-tie disconnected"></i>
+        <h3>Master Account</h3>
+        <p>Demo</p>
+        <div class="status off">Disconnected</div>
+      </div>
+      <div class="connection-box" id="copy-status-box">
+        <i class="fas fa-sync-alt"></i>
+        <h3>Copy Trading</h3>
+        <p>Status</p>
+        <div class="status off" id="copy-status-text">OFF</div>
+      </div>
+      <div class="connection-box" id="follower-status">
+        <i class="fas fa-user disconnected"></i>
+        <h3>Follower Account</h3>
+        <p>Real</p>
+        <div class="status off">Disconnected</div>
+      </div>
+    </div>
+    
+    <div class="grid">
+      <!-- API Tokens Card -->
+      <div class="card">
+        <div class="card-header">
+          <h3><i class="fas fa-key"></i> API Configuration</h3>
+        </div>
+        <p>Enter your API tokens for the master (demo) and follower (real) accounts:</p>
+        
+        <label for="masterToken">Master Token (Demo):</label>
+        <div class="tooltip">
+          <i class="fas fa-info-circle"></i>
+          <span class="tooltiptext">Get this from your Deriv demo account API settings</span>
+        </div>
+        <input type="password" id="masterToken" placeholder="Enter Master API Token">
+        
+        <label for="followerToken">Follower Token (Real):</label>
+        <div class="tooltip">
+          <i class="fas fa-info-circle"></i>
+          <span class="tooltiptext">Get this from your Deriv real account API settings</span>
+        </div>
+        <input type="password" id="followerToken" placeholder="Enter Follower API Token">
+        
+        <button id="saveTokens"><i class="fas fa-save"></i> Save Tokens</button>
+        <div class="status" id="tokens-status">Tokens not configured</div>
+      </div>
+      
+      <!-- Copy Trading Controls Card -->
+      <div class="card">
+        <div class="card-header">
+          <h3><i class="fas fa-cogs"></i> Trading Controls</h3>
+        </div>
+        
+        <div class="switch-container">
+          <label class="switch">
+            <input type="checkbox" id="copyTradeSwitch">
+            <span class="slider round"></span>
+          </label>
+          <span style="font-weight: 600;">Enable Copy Trading</span>
+        </div>
+        
+        <label>Copy Mode:</label>
+        <select id="copyMode" class="full-width" style="padding: 10px; width: 100%; margin-bottom: 15px;">
+          <option value="full">Full Copy (All trades)</option>
+          <option value="filtered">Filtered Copy (Custom rules)</option>
+          <option value="percentage">Percentage Copy (Fraction of trade size)</option>
+        </select>
+        
+        <div id="filterOptions" style="display: none;">
+          <label>
+            <input type="checkbox" id="filterProfit"> Only copy profitable trades
+          </label><br>
+          <label>
+            <input type="checkbox" id="filterAmount"> Minimum trade amount: 
+            <input type="number" id="minAmount" style="width: 80px; display: inline;" placeholder="10"> USD
+          </label>
+        </div>
+        
+        <div id="percentageOptions" style="display: none;">
+          <label>Copy Percentage:</label>
+          <input type="range" id="copyPercentage" min="1" max="100" value="100" style="width: 100%;">
+          <span id="percentageValue">100%</span>
+        </div>
+        
+        <button id="start" disabled><i class="fas fa-play"></i> Start Connection</button>
+        <button id="stop" class="secondary" disabled><i class="fas fa-stop"></i> Stop Connection</button>
+      </div>
+    </div>
+    
+    <!-- Trade History Card -->
+    <div class="card">
+      <div class="card-header">
+        <h3><i class="fas fa-history"></i> Trade History <span class="badge" id="trade-count">0</span></h3>
+        <button id="refreshHistory" class="secondary"><i class="fas fa-sync-alt"></i> Refresh</button>
+      </div>
+      
+      <table class="trade-history">
+        <thead>
+          <tr>
+            <th>Time</th>
+            <th>Symbol</th>
+            <th>Type</th>
+            <th>Amount</th>
+            <th>Result</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody id="trade-history-body">
+          <tr>
+            <td colspan="6" style="text-align: center;">No trades recorded yet</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    
+    <!-- Statistics Card -->
+    <div class="card">
+      <div class="card-header">
+        <h3><i class="fas fa-chart-line"></i> Performance Statistics</h3>
+      </div>
+      
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px;">
+        <div style="text-align: center;">
+          <h4>Total Trades</h4>
+          <p style="font-size: 24px; font-weight: bold;" id="total-trades">0</p>
+        </div>
+        <div style="text-align: center;">
+          <h4>Successful Copies</h4>
+          <p style="font-size: 24px; font-weight: bold; color: var(--success-color);" id="successful-copies">0</p>
+        </div>
+        <div style="text-align: center;">
+          <h4>Failed Copies</h4>
+          <p style="font-size: 24px; font-weight: bold; color: var(--danger-color);" id="failed-copies">0</p>
+        </div>
+        <div style="text-align: center;">
+          <h4>Success Rate</h4>
+          <p style="font-size: 24px; font-weight: bold;" id="success-rate">0%</p>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Logs Card -->
+    <div class="card">
+      <div class="card-header">
+        <h3><i class="fas fa-terminal"></i> System Logs</h3>
+        <button id="clearLogs" class="danger"><i class="fas fa-trash-alt"></i> Clear</button>
+      </div>
+      <div style="max-height: 200px; overflow-y: auto; background: #f8f9fa; padding: 10px; border-radius: 4px; font-family: monospace;" id="logs">
+        <div>[System] Ready to connect...</div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Global variables
+    let MASTER_TOKEN = '';
+    let FOLLOWER_TOKEN = '';
+    const DERIV_WS_URL = 'wss://ws.derivws.com/websockets/v3?app_id=1089';
+    let copyTradingEnabled = false;
+    let masterAuthorized = false;
+    let followerAuthorized = false;
+    let wsMaster, wsFollower;
+    let tradeHistory = [];
+    let stats = {
+      totalTrades: 0,
+      successfulCopies: 0,
+      failedCopies: 0
+    };
+    
+    // DOM elements
+    const elements = {
+      masterToken: document.getElementById('masterToken'),
+      followerToken: document.getElementById('followerToken'),
+      saveTokens: document.getElementById('saveTokens'),
+      tokensStatus: document.getElementById('tokens-status'),
+      copyTradeSwitch: document.getElementById('copyTradeSwitch'),
+      copyStatusText: document.getElementById('copy-status-text'),
+      startBtn: document.getElementById('start'),
+      stopBtn: document.getElementById('stop'),
+      masterStatus: document.getElementById('master-status'),
+      followerStatus: document.getElementById('follower-status'),
+      copyStatusBox: document.getElementById('copy-status-box'),
+      tradeHistoryBody: document.getElementById('trade-history-body'),
+      tradeCount: document.getElementById('trade-count'),
+      totalTrades: document.getElementById('total-trades'),
+      successfulCopies: document.getElementById('successful-copies'),
+      failedCopies: document.getElementById('failed-copies'),
+      successRate: document.getElementById('success-rate'),
+      logs: document.getElementById('logs'),
+      clearLogs: document.getElementById('clearLogs'),
+      refreshHistory: document.getElementById('refreshHistory'),
+      copyMode: document.getElementById('copyMode'),
+      filterOptions: document.getElementById('filterOptions'),
+      percentageOptions: document.getElementById('percentageOptions'),
+      percentageValue: document.getElementById('percentageValue'),
+      copyPercentage: document.getElementById('copyPercentage')
+    };
+    
+    // Initialize the app
+    function init() {
+      // Load saved tokens from localStorage if available
+      if (localStorage.getItem('deriv_master_token')) {
+        elements.masterToken.value = localStorage.getItem('deriv_master_token');
+        MASTER_TOKEN = elements.masterToken.value;
+      }
+      
+      if (localStorage.getItem('deriv_follower_token')) {
+        elements.followerToken.value = localStorage.getItem('deriv_follower_token');
+        FOLLOWER_TOKEN = elements.followerToken.value;
+      }
+      
+      if (MASTER_TOKEN && FOLLOWER_TOKEN) {
+        elements.tokensStatus.textContent = 'Tokens loaded from storage';
+        elements.tokensStatus.className = 'status on';
+        elements.startBtn.disabled = false;
+      }
+      
+      // Set up event listeners
+      setupEventListeners();
+      
+      // Update UI based on copy mode
+      updateCopyModeUI();
+    }
+    
+    // Set up all event listeners
+    function setupEventListeners() {
+      // Save tokens button
+      elements.saveTokens.addEventListener('click', saveTokens);
+      
+      // Copy trading toggle
+      elements.copyTradeSwitch.addEventListener('change', toggleCopyTrading);
+      
+      // Start/stop buttons
+      elements.startBtn.addEventListener('click', startConnection);
+      elements.stopBtn.addEventListener('click', stopConnection);
+      
+      // Clear logs button
+      elements.clearLogs.addEventListener('click', () => {
+        elements.logs.innerHTML = '<div>[System] Logs cleared</div>';
+      });
+      
+      // Refresh history button
+      elements.refreshHistory.addEventListener('click', refreshTradeHistory);
+      
+      // Copy mode change
+      elements.copyMode.addEventListener('change', updateCopyModeUI);
+      
+      // Percentage slider
+      elements.copyPercentage.addEventListener('input', () => {
+        elements.percentageValue.textContent = `${elements.copyPercentage.value}%`;
+      });
+    }
+    
+    // Save tokens to localStorage and enable start button
+    function saveTokens() {
+      const masterInput = elements.masterToken.value.trim();
+      const followerInput = elements.followerToken.value.trim();
+      
+      if (masterInput === '' || followerInput === '') {
+        elements.tokensStatus.textContent = 'Both tokens are required';
+        elements.tokensStatus.className = 'status off';
+        return;
+      }
+      
+      MASTER_TOKEN = masterInput;
+      FOLLOWER_TOKEN = followerInput;
+      
+      // Save to localStorage
+      localStorage.setItem('deriv_master_token', MASTER_TOKEN);
+      localStorage.setItem('deriv_follower_token', FOLLOWER_TOKEN);
+      
+      elements.tokensStatus.textContent = 'Tokens saved successfully!';
+      elements.tokensStatus.className = 'status on';
+      elements.startBtn.disabled = false;
+      
+      addLog('Tokens saved and encrypted in browser storage');
+    }
+    
+    // Toggle copy trading on/off
+    function toggleCopyTrading() {
+      copyTradingEnabled = elements.copyTradeSwitch.checked;
+      
+      if (copyTradingEnabled) {
+        elements.copyStatusText.textContent = 'ACTIVE';
+        elements.copyStatusText.className = 'status on';
+        elements.copyStatusBox.querySelector('i').className = 'fas fa-sync-alt pulse';
+        addLog('Copy trading enabled');
+      } else {
+        elements.copyStatusText.textContent = 'INACTIVE';
+        elements.copyStatusText.className = 'status off';
+        elements.copyStatusBox.querySelector('i').className = 'fas fa-sync-alt';
+        addLog('Copy trading disabled');
+      }
+    }
+    
+    // Start WebSocket connections
+    function startConnection() {
+      if (!MASTER_TOKEN || !FOLLOWER_TOKEN) {
+        addLog('Error: Tokens not configured', 'error');
+        return;
+      }
+      
+      addLog('Starting connections to Deriv API...');
+      
+      // Master connection
+      wsMaster = new WebSocket(DERIV_WS_URL);
+      wsMaster.onopen = () => {
+        addLog('Master WebSocket connected, authorizing...');
+        wsMaster.send(JSON.stringify({ authorize: MASTER_TOKEN }));
+        updateConnectionStatus('master', 'connecting');
+      };
+      
+      wsMaster.onerror = (err) => {
+        addLog(`Master connection error: ${err.message}`, 'error');
+        updateConnectionStatus('master', 'error');
+      };
+      
+      wsMaster.onclose = () => {
+        addLog('Master connection closed');
+        updateConnectionStatus('master', 'disconnected');
+      };
+      
+      wsMaster.onmessage = handleMasterMessage;
+      
+      // Follower connection
+      wsFollower = new WebSocket(DERIV_WS_URL);
+      wsFollower.onopen = () => {
+        addLog('Follower WebSocket connected, authorizing...');
+        wsFollower.send(JSON.stringify({ authorize: FOLLOWER_TOKEN }));
+        updateConnectionStatus('follower', 'connecting');
+      };
+      
+      wsFollower.onerror = (err) => {
+        addLog(`Follower connection error: ${err.message}`, 'error');
+        updateConnectionStatus('follower', 'error');
+      };
+      
+      wsFollower.onclose = () => {
+        addLog('Follower connection closed');
+        updateConnectionStatus('follower', 'disconnected');
+      };
+      
+      wsFollower.onmessage = handleFollowerMessage;
+      
+      // Disable start button, enable stop button
+      elements.startBtn.disabled = true;
+      elements.stopBtn.disabled = false;
+    }
+    
+    // Stop WebSocket connections
+    function stopConnection() {
+      addLog('Stopping connections...');
+      
+      if (wsMaster) {
+        wsMaster.close();
+      }
+      
+      if (wsFollower) {
+        wsFollower.close();
+      }
+      
+      // Reset connection statuses
+      updateConnectionStatus('master', 'disconnected');
+      updateConnectionStatus('follower', 'disconnected');
+      
+      // Disable stop button, enable start button
+      elements.startBtn.disabled = false;
+      elements.stopBtn.disabled = true;
+    }
+    
+    // Handle messages from master account
+    function handleMasterMessage(msg) {
+      try {
+        const data = JSON.parse(msg.data);
+        
+        // Authorization response
+        if (data.msg_type === 'authorize') {
+          masterAuthorized = true;
+          addLog('Master account authorized successfully');
+          updateConnectionStatus('master', 'connected');
+          
+          // Subscribe to transaction updates
+          wsMaster.send(JSON.stringify({ 
+            subscribe: 1, 
+            transaction: 1,
+            proposal: 1
+          }));
+          return;
+        }
+        
+        // Transaction message (trade execution)
+        if (data.msg_type === 'transaction' && data.transaction.action === 'buy') {
+          handleNewTrade(data.transaction);
+          return;
+        }
+        
+        // Proposal message (trade intent)
+        if (data.msg_type === 'proposal') {
+          addLog(`New trade proposal: ${data.proposal.contract_type} on ${data.proposal.symbol}`);
+          return;
+        }
+        
+        // Other messages
+        if (data.msg_type) {
+          addLog(`Master message: ${data.msg_type}`);
+        }
+        
+      } catch (err) {
+        addLog(`Error processing master message: ${err.message}`, 'error');
+      }
+    }
+    
+    // Handle messages from follower account
+    function handleFollowerMessage(msg) {
+      try {
+        const data = JSON.parse(msg.data);
+        
+        // Authorization response
+        if (data.msg_type === 'authorize') {
+          followerAuthorized = true;
+          addLog('Follower account authorized successfully');
+          updateConnectionStatus('follower', 'connected');
+          return;
+        }
+        
+        // Buy response
+        if (data.msg_type === 'buy') {
+          handleCopyTradeResponse(data);
+          return;
+        }
+        
+        // Other messages
+        if (data.msg_type) {
+          addLog(`Follower message: ${data.msg_type}`);
+        }
+        
+      } catch (err) {
+        addLog(`Error processing follower message: ${err.message}`, 'error');
+      }
+    }
+    
+    // Handle new trade from master account
+    function handleNewTrade(transaction) {
+      stats.totalTrades++;
+      updateStats();
+      
+      const trade = {
+        id: transaction.transaction_id,
+        time: new Date(transaction.transaction_time * 1000).toLocaleTimeString(),
+        symbol: transaction.symbol,
+        type: transaction.contract_type,
+        amount: parseFloat(transaction.amount),
+        status: 'pending',
+        copied: false
+      };
+      
+      tradeHistory.unshift(trade);
+      refreshTradeHistory();
+      addLog(`New trade detected: ${trade.type} on ${trade.symbol} for $${trade.amount}`);
+      
+      // Check if we should copy this trade
+      if (copyTradingEnabled && followerAuthorized) {
+        copyTrade(transaction);
+      } else {
+        addLog('Trade not copied (copy trading disabled or follower not authorized)');
+      }
+    }
+    
+    // Copy trade to follower account
+    function copyTrade(transaction) {
+      const copyPercentage = parseInt(elements.copyPercentage.value) / 100;
+      const amount = parseFloat(transaction.amount) * copyPercentage;
+      
+      const buyRequest = {
+        buy: 1,
+        price: amount,
+        parameters: {
+          amount: amount,
+          basis: 'stake',
+          contract_type: transaction.contract_type,
+          currency: 'USD',
+          duration: transaction.duration,
+          duration_unit: transaction.duration_unit,
+          symbol: transaction.symbol
+        }
+      };
+      
+      addLog(`Copying trade: ${transaction.contract_type} on ${transaction.symbol} for $${amount.toFixed(2)}`);
+      
+      try {
+        wsFollower.send(JSON.stringify(buyRequest));
+        
+        // Update trade status in history
+        const trade = tradeHistory.find(t => t.id === transaction.transaction_id);
+        if (trade) {
+          trade.status = 'copying';
+          refreshTradeHistory();
+        }
+      } catch (err) {
+        addLog(`Error copying trade: ${err.message}`, 'error');
+        
+        const trade = tradeHistory.find(t => t.id === transaction.transaction_id);
+        if (trade) {
+          trade.status = 'copy failed';
+          trade.copied = false;
+          stats.failedCopies++;
+          refreshTradeHistory();
+          updateStats();
+        }
+      }
+    }
+    
+    // Handle response from copied trade
+    function handleCopyTradeResponse(response) {
+      const trade = tradeHistory.find(t => t.status === 'copying');
+      
+      if (trade) {
+        if (response.error) {
+          trade.status = 'copy failed';
+          trade.copied = false;
+          stats.failedCopies++;
+          addLog(`Trade copy failed: ${response.error.message}`, 'error');
+        } else {
+          trade.status = 'copied';
+          trade.copied = true;
+          trade.result = response.buy.payout ? 'win' : 'loss';
+          trade.profit = response.buy.payout ? 
+            parseFloat(response.buy.payout) - parseFloat(response.buy.price) : 
+            -parseFloat(response.buy.price);
+          stats.successfulCopies++;
+          addLog(`Trade copied successfully (P/L: $${trade.profit.toFixed(2)})`);
+        }
+        
+        refreshTradeHistory();
+        updateStats();
+      }
+    }
+    
+    // Update connection status UI
+    function updateConnectionStatus(account, status) {
+      const element = elements[`${account}Status`];
+      const icon = element.querySelector('i');
+      const statusDiv = element.querySelector('.status');
+      
+      icon.className = `fas ${account === 'master' ? 'fa-user-tie' : 'fa-user'}`;
+      
+      switch (status) {
+        case 'connecting':
+          statusDiv.textContent = 'Connecting...';
+          statusDiv.className = 'status pending';
+          icon.className += ' fa-spin';
+          break;
+        case 'connected':
+          statusDiv.textContent = 'Connected';
+          statusDiv.className = 'status on';
+          icon.className += ' connected';
+          break;
+        case 'error':
+          statusDiv.textContent = 'Connection Error';
+          statusDiv.className = 'status off';
+          icon.className += ' disconnected';
+          break;
+        case 'disconnected':
+        default:
+          statusDiv.textContent = 'Disconnected';
+          statusDiv.className = 'status off';
+          icon.className += ' disconnected';
+          break;
+      }
+    }
+    
+    // Refresh trade history table
+    function refreshTradeHistory() {
+      const tbody = elements.tradeHistoryBody;
+      tbody.innerHTML = '';
+      
+      if (tradeHistory.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="6" style="text-align: center;">No trades recorded yet</td></tr>';
+        elements.tradeCount.textContent = '0';
+        return;
+      }
+      
+      tradeHistory.forEach(trade => {
+        const row = document.createElement('tr');
+        
+        // Time
+        const timeCell = document.createElement('td');
+        timeCell.textContent = trade.time;
+        row.appendChild(timeCell);
+        
+        // Symbol
+        const symbolCell = document.createElement('td');
+        symbolCell.textContent = trade.symbol;
+        row.appendChild(symbolCell);
+        
+        // Type
+        const typeCell = document.createElement('td');
+        typeCell.textContent = trade.type;
+        row.appendChild(typeCell);
+        
+        // Amount
+        const amountCell = document.createElement('td');
+        amountCell.textContent = `$${trade.amount.toFixed(2)}`;
+        row.appendChild(amountCell);
+        
+        // Result
+        const resultCell = document.createElement('td');
+        if (trade.result === 'win') {
+          resultCell.textContent = `+$${trade.profit.toFixed(2)}`;
+          resultCell.className = 'profit';
+        } else if (trade.result === 'loss') {
+          resultCell.textContent = `-$${Math.abs(trade.profit).toFixed(2)}`;
+          resultCell.className = 'loss';
+        } else {
+          resultCell.textContent = '-';
+        }
+        row.appendChild(resultCell);
+        
+        // Status
+        const statusCell = document.createElement('td');
+        switch (trade.status) {
+          case 'pending':
+            statusCell.textContent = 'Pending';
+            statusCell.style.color = 'var(--warning-color)';
+            break;
+          case 'copying':
+            statusCell.textContent = 'Copying...';
+            statusCell.style.color = 'var(--secondary-color)';
+            break;
+          case 'copied':
+            statusCell.textContent = 'Copied';
+            statusCell.style.color = 'var(--success-color)';
+            break;
+          case 'copy failed':
+            statusCell.textContent = 'Failed';
+            statusCell.style.color = 'var(--danger-color)';
+            break;
+          default:
+            statusCell.textContent = trade.status;
+        }
+        row.appendChild(statusCell);
+        
+        tbody.appendChild(row);
+      });
+      
+      elements.tradeCount.textContent = tradeHistory.length;
+    }
+    
+    // Update statistics display
+    function updateStats() {
+      elements.totalTrades.textContent = stats.totalTrades;
+      elements.successfulCopies.textContent = stats.successfulCopies;
+      elements.failedCopies.textContent = stats.failedCopies;
+      
+      const successRate = stats.totalTrades > 0 ? 
+        Math.round((stats.successfulCopies / stats.totalTrades) * 100) : 0;
+      elements.successRate.textContent = `${successRate}%`;
+    }
+    
+    // Add a log message
+    function addLog(message, type = 'info') {
+      const now = new Date();
+      const timeString = now.toLocaleTimeString();
+      const logEntry = document.createElement('div');
+      
+      switch (type) {
+        case 'error':
+          logEntry.style.color = 'var(--danger-color)';
+          break;
+        case 'warning':
+          logEntry.style.color = 'var(--warning-color)';
+          break;
+        case 'success':
+          logEntry.style.color = 'var(--success-color)';
+          break;
+        default:
+          logEntry.style.color = '#333';
+      }
+      
+      logEntry.textContent = `[${timeString}] ${message}`;
+      elements.logs.insertBefore(logEntry, elements.logs.firstChild);
+      
+      // Limit logs to 100 entries
+      if (elements.logs.children.length > 100) {
+        elements.logs.removeChild(elements.logs.lastChild);
+      }
+    }
+    
+    // Update UI based on selected copy mode
+    function updateCopyModeUI() {
+      const mode = elements.copyMode.value;
+      
+      // Hide all options first
+      elements.filterOptions.style.display = 'none';
+      elements.percentageOptions.style.display = 'none';
+      
+      // Show relevant options
+      if (mode === 'filtered') {
+        elements.filterOptions.style.display = 'block';
+        addLog('Copy mode set to: Filtered (custom rules)');
+      } else if (mode === 'percentage') {
+        elements.percentageOptions.style.display = 'block';
+        addLog(`Copy mode set to: Percentage (${elements.copyPercentage.value}%)`);
+      } else {
+        addLog('Copy mode set to: Full (100% copy)');
+      }
+    }
+    
+    // Initialize the application
+    init();
+  </script>
+</body>
+</html>
